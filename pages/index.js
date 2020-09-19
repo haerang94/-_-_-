@@ -1,16 +1,22 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import styled from "styled-components";
 import Opening from "components/opening";
+
+const Main = styled.main`
+  width: 100vw;
+  height: 100vh;
+`;
+
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Create Next App</title>
       </Head>
 
-      <main className={styles.main}>
+      <Main>
         <Opening />
-      </main>
+      </Main>
     </div>
   );
 }
