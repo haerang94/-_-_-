@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import Detail from "components/detail";
+import Opening from "components/opening";
 export default function Home() {
   return (
     <div className={styles.container}>
@@ -9,7 +9,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <img src="static/opening1.jpg" alt="" />
+        <Opening />
       </main>
     </div>
   );
