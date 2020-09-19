@@ -10,21 +10,21 @@ const Container = styled.section`
   -webkit-flex-direction: column;
   background: black;
 `;
-const ImgContainer = styled.div`
-  padding: 10px;
-  border: 1px solid red;
-`;
+
 const Img = styled.div`
   background-image: url(${(props) => props.src});
   width: 650px;
-  height: 500px;
+  height: 480px;
   background-repeat: no-repeat;
   background-size: cover;
 `;
 
 const Content = styled.div`
+  margin-top: 5px;
+  width: 630px;
   padding: 10px;
   color: #fff;
+  font-size: 28px;
 `;
 
 const PageNumber = styled.div`
@@ -55,9 +55,7 @@ const Opening = () => {
   return (
     <>
       <Container>
-        <ImgContainer>
-          <Img src={imgUrl} alt={imgUrl} />
-        </ImgContainer>
+        <Img src={imgUrl} alt={imgUrl} />
         {curPage > 1 && <Content>{content[curPage - 2]}</Content>}
         <PageNumber>page:{curPage}</PageNumber>
       </Container>
