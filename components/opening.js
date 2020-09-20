@@ -22,6 +22,7 @@ const Img = styled.div`
   background-size: cover;
   transition: 0.5s;
   opacity: ${({ state }) => (state === "entered" ? 1 : 0)};
+  border-radius: 5px;
 `;
 
 const Content = styled.div`
@@ -34,7 +35,6 @@ const Content = styled.div`
   white-space: pre-wrap;
   transition: 0.5s;
   opacity: ${({ state }) => (state === "entered" ? 1 : 0)};
-  display: ${({ state }) => (state === "exited" ? "none" : "block")};
 `;
 
 const PageNumber = styled.div`
@@ -43,6 +43,35 @@ const PageNumber = styled.div`
   top: 15px;
   right: 20px;
   font-size: 20px;
+  opacity: ${({ state }) => (state === "entered" ? 1 : 0)};
+`;
+
+const NextBtn = styled.button`
+  background: coral;
+  color: #fff;
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+  width: 80px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1px solid #fff;
+  outline: none;
+
+  &:active {
+    bottom: 38px;
+    right: 28px;
+  }
+`;
+
+const PrevBtn = styled(NextBtn)`
+  bottom: 40px;
+  left: 30px;
+
+  &:active {
+    bottom: 38px;
+    left: 28px;
+  }
 `;
 
 const Opening = () => {
@@ -62,7 +91,7 @@ const Opening = () => {
 
   const imgUrl = `static/opening${curPage}.jpg`;
   const id = uuidv4();
-  console.log(animate);
+
   return (
     <>
       <Container>
@@ -78,12 +107,13 @@ const Opening = () => {
                   })}
                 </Content>
               )}
+              <PageNumber state={state}>page : {curPage} / 5</PageNumber>
             </>
           )}
         </Transition>
-        <button onClick={doAnimate}>Animate</button>
+        <NextBtn onClick={doAnimate}>다음 페이지</NextBtn>
+        <PrevBtn onClick={doAnimate}>이전 페이지</PrevBtn>
       </Container>
-      <PageNumber>page : {curPage} / 5</PageNumber>
     </>
   );
 };
