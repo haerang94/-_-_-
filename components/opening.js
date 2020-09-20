@@ -47,7 +47,7 @@ const PageNumber = styled.div`
 `;
 
 const NextBtn = styled.button`
-  background: coral;
+  background: #fe7171;
   color: #fff;
   position: absolute;
   bottom: 40px;
@@ -61,6 +61,10 @@ const NextBtn = styled.button`
   &:active {
     bottom: 38px;
     right: 28px;
+  }
+
+  &:hover {
+    background: coral;
   }
 `;
 
@@ -81,6 +85,8 @@ const Opening = () => {
 
   const doAnimate = useCallback(
     (btn) => {
+      if (curPage === 5 && btn === "next") return;
+      if (curPage === 1 && btn === "prev") return;
       setAnimate(false);
       setTimeout(() => {
         setAnimate(true);
@@ -89,7 +95,7 @@ const Opening = () => {
         } else if (btn === "prev" && curPage != 1) {
           setCurPage(curPage - 1);
         }
-      }, 300);
+      }, 200);
     },
     [curPage, animate]
   );
@@ -116,8 +122,12 @@ const Opening = () => {
             </>
           )}
         </Transition>
-        <NextBtn onClick={() => doAnimate("next")}>다음 페이지</NextBtn>
-        <PrevBtn onClick={() => doAnimate("prev")}>이전 페이지</PrevBtn>
+        {curPage !== 5 && (
+          <NextBtn onClick={() => doAnimate("next")}>다음 페이지</NextBtn>
+        )}
+        {curPage !== 1 && (
+          <PrevBtn onClick={() => doAnimate("prev")}>이전 페이지</PrevBtn>
+        )}
       </Container>
     </>
   );
