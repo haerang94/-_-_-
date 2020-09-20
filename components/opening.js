@@ -79,15 +79,20 @@ const Opening = () => {
   const [animate, setAnimate] = useState(true);
   const [content, setContent] = useState(contents);
 
-  const doAnimate = useCallback(() => {
-    setAnimate(false);
-    setTimeout(() => {
-      setAnimate(true);
-      if (curPage != 5) {
-        setCurPage(curPage + 1);
-      }
-    }, 300);
-  });
+  const doAnimate = useCallback(
+    (btn) => {
+      setAnimate(false);
+      setTimeout(() => {
+        setAnimate(true);
+        if (btn === "next" && curPage != 5) {
+          setCurPage(curPage + 1);
+        } else if (btn === "prev" && curPage != 1) {
+          setCurPage(curPage - 1);
+        }
+      }, 300);
+    },
+    [curPage, animate]
+  );
 
   const imgUrl = `static/opening${curPage}.jpg`;
   const id = uuidv4();
@@ -111,8 +116,8 @@ const Opening = () => {
             </>
           )}
         </Transition>
-        <NextBtn onClick={doAnimate}>다음 페이지</NextBtn>
-        <PrevBtn onClick={doAnimate}>이전 페이지</PrevBtn>
+        <NextBtn onClick={() => doAnimate("next")}>다음 페이지</NextBtn>
+        <PrevBtn onClick={() => doAnimate("prev")}>이전 페이지</PrevBtn>
       </Container>
     </>
   );
