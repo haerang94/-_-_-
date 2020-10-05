@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useCallback } from "react";
+import styled, { keyframes } from "styled-components";
+import { Transition } from "react-transition-group";
+import { v4 as uuidv4 } from "uuid";
+import { contents } from "static/contents/openingText";
+import Router from "next/router";
 
 const Container = styled.section`
   display: flex;
@@ -10,58 +14,124 @@ const Container = styled.section`
   -webkit-flex-direction: column;
   background: black;
 `;
-const ImgContainer = styled.div`
-  padding: 10px;
-  border: 1px solid red;
-`;
+
 const Img = styled.div`
   background-image: url(${(props) => props.src});
   width: 650px;
-  height: 500px;
+  height: 480px;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: 0.5s;
+  opacity: ${({ state }) => (state === "entered" ? 1 : 0)};
+  border-radius: 5px;
 `;
 
 const Content = styled.div`
+  margin-top: 5px;
+  width: 700px;
   padding: 10px;
   color: #fff;
+  font-size: 24px;
+  text-align: center;
+  white-space: pre-wrap;
+  transition: 0.5s;
+  opacity: ${({ state }) => (state === "entered" ? 1 : 0)};
 `;
 
 const PageNumber = styled.div`
   color: #fff;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 20px;
+  opacity: ${({ state }) => (state === "entered" ? 1 : 0)};
 `;
 
-const Opening = () => {
-  const contents = [
-    "옛날 옛날에 어느 설산에 자연을 너무나 사랑하는 강아지 마을이 있었어요. 강아지들은 자연을 너무 사랑해서 설산에서도 씨앗을 자라게 할 수 있었답니다.",
-    "그렇게 평화롭게 작물과 살아가는 어느 날 밤,강아지 마을에  토끼 혜성들이 마구 떨어졌어요!",
-    "강아지들은 토끼들에게  왜 이곳에 왔냐고 물었어요.그랬더니 토끼들은 이렇게 말했어요.'토끼. 감정. 서툴다. 강아지들. 씨앗. 사랑한다.우주씨앗. 사랑으로만 큰다.그래서. 왔다. 부탁.'",
-    "토끼들은 강아지들이 열심히 키워준다면 다른 씨앗도 가지고 오겠다고 하면서 사라졌습니다.강아지들은 망연히 우주 씨앗을 바라봤어요.강아지들은 우주 씨앗을 잘 키워낼 수 있을까요?",
-  ];
-  const [curPage, setCurPage] = useState(1);
-  const [content, setContent] = useState(contents);
+const NextBtn = styled.button`
+  background: #fe7171;
+  color: #fff;
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+  width: 80px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1px solid #fff;
+  outline: none;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (curPage != 5) {
-        setCurPage(curPage + 1);
-        console.log(curPage);
-      }
-    }, 3000);
-    return () => clearTimeout(timer);
-  });
+  &:active {
+    bottom: 38px;
+    right: 28px;
+  }
+
+  &:hover {
+    background: coral;
+  }
+`;
+
+const PrevBtn = styled(NextBtn)`
+  bottom: 40px;
+  left: 30px;
+
+  &:active {
+    bottom: 38px;
+    left: 28px;
+  }
+`;
+
+const MainBtn = styled(NextBtn)``;
+
+const Opening = () => {
+  const [curPage, setCurPage] = useState(1);
+  const [animate, setAnimate] = useState(true);
+
+  const doAnimate = useCallback(
+    (btn) => {
+      if (curPage === 5 && btn === "next") return;
+      if (curPage === 1 && btn === "prev") return;
+      setAnimate(false);
+      setTimeout(() => {
+        setAnimate(true);
+        if (btn === "next" && curPage != 5) {
+          setCurPage(curPage + 1);
+        } else if (btn === "prev" && curPage != 1) {
+          setCurPage(curPage - 1);
+        }
+      }, 200);
+    },
+    [curPage, animate]
+  );
 
   const imgUrl = `static/opening${curPage}.jpg`;
+
   return (
-    <>
-      <Container>
-        <ImgContainer>
-          <Img src={imgUrl} alt={imgUrl} />
-        </ImgContainer>
-        {curPage > 1 && <Content>{content[curPage - 2]}</Content>}
-        <PageNumber>page:{curPage}</PageNumber>
-      </Container>
-    </>
+    <Container>
+      <Transition in={animate} timeout={500} unmountOnExit mountOnEnter>
+        {(state) => (
+          <>
+            <Img src={imgUrl} alt={imgUrl} state={state} />
+            {curPage > 1 && (
+              <Content state={state}>
+                {contents[curPage - 2].split("\n").map((item) => {
+                  const id = uuidv4();
+                  return <p key={id}>{item}</p>;
+                })}
+              </Content>
+            )}
+            <PageNumber state={state}>page : {curPage} / 5</PageNumber>
+          </>
+        )}
+      </Transition>
+      {curPage == 5 && (
+        <MainBtn onClick={() => Router.push("/home")}>시작하기</MainBtn>
+      )}
+      {curPage !== 5 && (
+        <NextBtn onClick={() => doAnimate("next")}>다음 페이지</NextBtn>
+      )}
+      {curPage !== 1 && (
+        <PrevBtn onClick={() => doAnimate("prev")}>이전 페이지</PrevBtn>
+      )}
+    </Container>
   );
 };
 

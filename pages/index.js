@@ -7,7 +7,7 @@ const Main = styled.main`
   height: 100vh;
 `;
 
-export default function Home() {
+export default function Index() {
   return (
     <div>
       <Head>
