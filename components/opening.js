@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components";
 import { Transition } from "react-transition-group";
 import { v4 as uuidv4 } from "uuid";
 import { contents } from "static/contents/openingText";
+import Router from "next/router";
 
 const Container = styled.section`
   display: flex;
@@ -78,10 +79,11 @@ const PrevBtn = styled(NextBtn)`
   }
 `;
 
+const MainBtn = styled(NextBtn)``;
+
 const Opening = () => {
   const [curPage, setCurPage] = useState(1);
   const [animate, setAnimate] = useState(true);
-  const [content, setContent] = useState(contents);
 
   const doAnimate = useCallback(
     (btn) => {
@@ -101,35 +103,35 @@ const Opening = () => {
   );
 
   const imgUrl = `static/opening${curPage}.jpg`;
-  const id = uuidv4();
 
   return (
-    <>
-      <Container>
-        <Transition in={animate} timeout={500} unmountOnExit mountOnEnter>
-          {(state) => (
-            <>
-              <Img src={imgUrl} alt={imgUrl} state={state} />
-              {curPage > 1 && (
-                <Content state={state}>
-                  {content[curPage - 2].split("\n").map((item) => {
-                    const id = uuidv4();
-                    return <p key={id}>{item}</p>;
-                  })}
-                </Content>
-              )}
-              <PageNumber state={state}>page : {curPage} / 5</PageNumber>
-            </>
-          )}
-        </Transition>
-        {curPage !== 5 && (
-          <NextBtn onClick={() => doAnimate("next")}>다음 페이지</NextBtn>
+    <Container>
+      <Transition in={animate} timeout={500} unmountOnExit mountOnEnter>
+        {(state) => (
+          <>
+            <Img src={imgUrl} alt={imgUrl} state={state} />
+            {curPage > 1 && (
+              <Content state={state}>
+                {contents[curPage - 2].split("\n").map((item) => {
+                  const id = uuidv4();
+                  return <p key={id}>{item}</p>;
+                })}
+              </Content>
+            )}
+            <PageNumber state={state}>page : {curPage} / 5</PageNumber>
+          </>
         )}
-        {curPage !== 1 && (
-          <PrevBtn onClick={() => doAnimate("prev")}>이전 페이지</PrevBtn>
-        )}
-      </Container>
-    </>
+      </Transition>
+      {curPage == 5 && (
+        <MainBtn onClick={() => Router.push("/home")}>시작하기</MainBtn>
+      )}
+      {curPage !== 5 && (
+        <NextBtn onClick={() => doAnimate("next")}>다음 페이지</NextBtn>
+      )}
+      {curPage !== 1 && (
+        <PrevBtn onClick={() => doAnimate("prev")}>이전 페이지</PrevBtn>
+      )}
+    </Container>
   );
 };
 
